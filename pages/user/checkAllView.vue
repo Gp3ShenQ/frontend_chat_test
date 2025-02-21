@@ -20,19 +20,25 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeMount, ref } from 'vue'
+import Swal from 'sweetalert2'
 import userApiStore from '~/utils/userApiStore'
-
 import goIndexButton from '~/components/goIndexButton.vue'
 
 const { func_CheckUserAllGet, func_DeleteProfileDelete } = userApiStore()
 
 const allData = ref()
 
-const deleteData = async (name: string) => {
+const deleteData = (name: string) => {
   const _param = { name }
-  await func_DeleteProfileDelete(_param)
-  allData.value = await func_CheckUserAllGet()
+
+  Swal.fire({
+    icon: 'question',
+    title: '確定刪除 ' + name + ' 嗎?',
+    showConfirmButton: true,
+  }).then(async () => {
+    await func_DeleteProfileDelete(_param)
+    allData.value = await func_CheckUserAllGet()
+  })
 }
 
 onBeforeMount(async () => {

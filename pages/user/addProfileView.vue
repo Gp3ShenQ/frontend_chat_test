@@ -19,19 +19,24 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
 import userApiStore from '~/utils/userApiStore'
 
-import Swal from 'sweetalert'
+import Swal from 'sweetalert2'
 import goIndexButton from '~/components/goIndexButton.vue'
 
 const { func_AddUserPost } = userApiStore()
 
-const age = ref<number>()
+const age = ref<number | null>(null)
 const name = ref('')
 const email = ref('')
 
-const saveProfile = () => {
+const initList = () => {
+  age.value = null
+  name.value = ''
+  email.value = ''
+}
+
+const saveProfile = async () => {
   console.log(typeof age.value)
   const _param = {
     name: name.value,
@@ -39,9 +44,16 @@ const saveProfile = () => {
     email: email.value,
   }
 
-  const _result = func_AddUserPost(_param)
+  const _result = await func_AddUserPost(_param)
+
   if (_result) {
-    console.log(_result)
+    Swal.fire({
+      icon: 'success',
+      title: '新增成功',
+      showConfirmButton: true,
+    }).then(() => {
+      initList()
+    })
   }
 }
 </script>

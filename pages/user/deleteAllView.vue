@@ -6,7 +6,7 @@
 </template>
 
 <script setup lang="ts">
-import {} from 'vue'
+import Swal from 'sweetalert2'
 import userApiStore from '~/utils/userApiStore'
 
 import goIndexButton from '~/components/goIndexButton.vue'
@@ -14,9 +14,12 @@ import goIndexButton from '~/components/goIndexButton.vue'
 const { func_DeleteAllDelete } = userApiStore()
 
 const deleteAll = () => {
-  const _result = func_DeleteAllDelete()
-  if (_result) {
-    console.log(_result)
-  }
+  Swal.fire({
+    icon: 'question',
+    title: '確定刪除全部嗎?',
+    showConfirmButton: true,
+  }).then(() => {
+    func_DeleteAllDelete()
+  })
 }
 </script>

@@ -12,6 +12,7 @@ export default defineNuxtConfig({
         '/api': {
           // API 路由
           target: 'http://localhost:3000/', // 主要 Domain
+          // target: 'https://backend-chat-2jso.onrender.com', // 主要 Domain
           changeOrigin: true,
         },
       },
