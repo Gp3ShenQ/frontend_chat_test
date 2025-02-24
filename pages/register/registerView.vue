@@ -25,6 +25,7 @@ import registerApiStore from '~/utils/registerApiStore'
 import goIndexButton from '~/components/goIndexButton.vue'
 
 const route = useRoute()
+const router = useRouter()
 const { func_RegisterPost } = registerApiStore()
 
 type Params = {
@@ -41,10 +42,10 @@ const entrance = route.query.type
 
 const registerType = computed(() => {
   if (entrance === 'user') {
-    return '帳號註冊'
+    return '帳號'
   }
   if (entrance === 'email') {
-    return '信箱註冊'
+    return '信箱'
   }
 })
 
@@ -74,28 +75,25 @@ const register = async () => {
   const emailCheck = emailTypeCheck(_params)
   if (emailCheck) return
 
-  await func_RegisterPost(_params).then((res) => {
-    try {
-      if (res.statusCode !== 200) {
-        throw new Error(`Error ${res.statusCode}: ${res.statusMessage || '新增失敗'}`)
-      }
-
+  const _result = await func_RegisterPost(_params)
+  try {
+    if (_result.statusCode === 200) {
       Swal.fire({
         icon: 'success',
         title: '已新增',
         showConfirmButton: true,
+      }).then(() => {
+        email.value = ''
+        account.value = ''
+        password.value = ''
+        router.push('/')
       })
-      email.value = ''
-      account.value = ''
-      password.value = ''
-    } catch (error) {
-      console.error('error', error)
-
+    } else {
       let errorMessage = '未知錯誤'
-      if (res.response.status === 409) {
+      if (_result.response.status === 409) {
         errorMessage = '此帳號已被註冊'
-      } else if (error.message) {
-        errorMessage = error.message
+      } else if (_result.response.status === 400) {
+        errorMessage = '請求無效'
       }
       Swal.fire({
         icon: 'error',
@@ -104,6 +102,18 @@ const register = async () => {
         showConfirmButton: true,
       })
     }
-  })
+  } catch (error) {
+    console.error('error', error)
+    let errorMessage = '未知錯誤'
+    if (error.message) {
+      errorMessage = error.message
+    }
+    Swal.fire({
+      icon: 'error',
+      title: '新增失敗',
+      text: errorMessage,
+      showConfirmButton: true,
+    })
+  }
 }
 </script>

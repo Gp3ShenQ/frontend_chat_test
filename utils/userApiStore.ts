@@ -80,10 +80,28 @@ export default function userApiStore() {
     }
   }
 
+  const func_CheckUserPersonalPost = async (_params: string) => {
+    const _apiUrl = apiPaths.CheckUserPersonalPost
+    try {
+      const _result = await $fetch(_apiUrl, {
+        method: 'POST',
+        body: _params,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      return _result
+    } catch (error) {
+      console.error('api', error)
+      return error
+    }
+  }
+
   return {
     func_AddUserPost,
     func_DeleteProfileDelete,
     func_DeleteAllDelete,
     func_CheckUserAllGet,
+    func_CheckUserPersonalPost,
   }
 }
