@@ -19,11 +19,21 @@
 
     <div class="flex justify-center gap-10">
       <p>姓名 :</p>
-      <input class="bg-[#6665DD]" type="text" v-model="computedName" :disabled="user.name !== ''" />
+      <template v-if="!user.name">
+        <input class="bg-[#6665DD]" type="text" v-model="name" :disabled="user.name !== '' && user.name !== undefined" />
+      </template>
+      <template v-if="user.name">
+        <div>{{ user.name }}</div>
+      </template>
     </div>
     <div class="flex justify-center gap-10">
       <p>年齡 :</p>
-      <input class="bg-[#6665DD]" type="text" v-model="computedAge" :disabled="user.age !== null && user.age !== 0" />
+      <template v-if="!user.age">
+        <input class="bg-[#6665DD]" type="text" v-model="age" :disabled="user.age !== null && user.age !== 0 && user.age !== undefined" />
+      </template>
+      <template v-if="user.age">
+        <div>{{ user.age }}</div>
+      </template>
     </div>
     <template v-if="!user.email">
       <div class="flex justify-center gap-10">
@@ -56,10 +66,10 @@ const commonStore = useCommonStore()
 const { user } = storeToRefs(commonStore)
 const { func_AddUserPost, func_CheckUserPersonalPost } = userApiStore()
 
-const age = ref<number | null>(null)
 const name = ref('')
-const account = ref('')
 const email = ref('')
+const account = ref('')
+const age = ref<number | null>(null)
 
 const initList = () => {
   age.value = null
@@ -68,22 +78,18 @@ const initList = () => {
   account.value = ''
 }
 
-const computedName = computed(() => {
-  if (user.value.name) {
-    return user.value.name || name.value
-  }
-})
-
-const computedAge = computed(() => {
-  if (user.value.age) {
-    return user.value.age || age.value
-  }
+const accountCheck = computed(() => {
+  return user.value.account ?? user.value.email
 })
 
 const refreshUserData = async () => {
-  const _personalResult = await func_CheckUserPersonalPost(user.value.account)
-  console.log(_personalResult, '_personalResult ')
-  // user.value = _personalResult
+  const _personalResult = await func_CheckUserPersonalPost(accountCheck.value)
+
+  user.value = _personalResult
+
+  console.log(accountCheck.value, 'accountCheck')
+  console.log(user.value.account, 'user')
+  console.log(user.value.email, 'user')
 }
 
 const saveProfile = async () => {
@@ -104,9 +110,14 @@ const saveProfile = async () => {
       title: '新增成功',
       showConfirmButton: true,
     }).then(() => {
-      // refreshUserData()
+      refreshUserData()
       initList()
     })
   }
 }
+
+onMounted(() => {
+  console.log(user.value)
+  console.log(user.value.name, 'name')
+})
 </script>

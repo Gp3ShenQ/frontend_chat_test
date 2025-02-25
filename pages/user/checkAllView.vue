@@ -43,5 +43,6 @@ const deleteData = (name: string) => {
 
 onBeforeMount(async () => {
   allData.value = await func_CheckUserAllGet()
+  console.log(allData.value)
 })
 </script>

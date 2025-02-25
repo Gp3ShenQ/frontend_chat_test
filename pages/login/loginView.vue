@@ -70,7 +70,9 @@ const login = async () => {
     }).then(() => {
       func_setLocalStorageLocale(_result.token)
       isLogin.value = true
+      console.log('_result.user', _result.user)
       user.value = _result.user
+      console.log('user.user', user.value)
       router.push('/')
     })
   } else {

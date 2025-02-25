@@ -85,7 +85,7 @@ export default function userApiStore() {
     try {
       const _result = await $fetch(_apiUrl, {
         method: 'POST',
-        body: _params,
+        body: { account: _params },
         headers: {
           'Content-Type': 'application/json',
         },

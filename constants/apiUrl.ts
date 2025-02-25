@@ -10,7 +10,7 @@ const apiPaths = {
   CheckUserAllGet: '/api/user/checkUserAllGet',
   DeleteUserDelete: '/api/user/deleteUserDelete',
   DeleteUserAllDelete: '/api/user/deleteUserAllDelete',
-  CheckUserPersonalPost: '/api/user/checkUserPersonalGet',
+  CheckUserPersonalPost: '/api/user/CheckUserPersonalPost',
 }
 
 export { apiPaths }
